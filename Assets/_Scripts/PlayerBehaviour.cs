@@ -7,13 +7,14 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform bulletSpawn;
     public GameObject bullet;
     public int fireRate;
-
+    ObjectPooler objectPooler;
 
     public BulletManager bulletManager;
 
-    void start()
-    {
-    }
+    //private void start()
+    //{
+    //    objectPooler = ObjectPooler.Instance;
+    //}
 
     // Update is called once per frame
     void Update()
@@ -28,11 +29,15 @@ public class PlayerBehaviour : MonoBehaviour
             // delays firing
             if (Time.frameCount % fireRate == 0)
             {
-                var tempBullet = Instantiate(bullet, bulletSpawn.position, Quaternion.identity);
-                tempBullet.GetComponent<BulletBehaviour>().direction = bulletSpawn.forward;
-
-                tempBullet.transform.SetParent(bulletManager.gameObject.transform);
-
+                GameObject bullet = ObjectPooler.Instance.GetObject();
+                if (bullet != null)
+                {
+                    bullet.transform.position = bulletSpawn.position;
+                    bullet.transform.rotation = Quaternion.identity;
+                    bullet.transform.SetParent(bulletManager.gameObject.transform);
+                    bullet.GetComponent<SphereBehaviour>().direction = bulletSpawn.forward;
+                    bullet.SetActive(true);
+                }
             }
 
         }

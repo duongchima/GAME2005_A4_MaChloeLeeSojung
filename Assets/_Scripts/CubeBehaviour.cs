@@ -7,9 +7,13 @@ using Color = UnityEngine.Color;
 [System.Serializable]
 public class CubeBehaviour : MonoBehaviour
 {
+    private Vector3 gravity;
+    public Vector3 acceleration;
     public Vector3 size;
     public Vector3 max;
     public Vector3 min;
+    public float speed;
+    public Vector3 direction;
     public Vector3 velocity;
     public Vector3 newVelocity;
     public float mass = 5.0f;
@@ -17,6 +21,8 @@ public class CubeBehaviour : MonoBehaviour
     public bool isColliding;
     public bool debug;
     public List<CubeBehaviour> contacts;
+    public List<SphereBehaviour> bulletContact;
+    public bool isGround;
 
     private MeshFilter meshFilter;
     private Bounds bounds;
@@ -26,18 +32,17 @@ public class CubeBehaviour : MonoBehaviour
     {
         debug = false;
         meshFilter = GetComponent<MeshFilter>();
-
+        acceleration.Set(0.0f, 0.0f, 0.0f);
+        velocity.Set(0.0f, 0.0f, 0.0f);
         bounds = meshFilter.mesh.bounds;
         size = bounds.size;
-
+        gravity.Set(0.0f, -9.8f, 0.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        velocity.x = 1.0f;
-        velocity.y = 1.0f;
-        velocity.z = 1.0f;
+        transform.position += velocity * Time.deltaTime;
         max = Vector3.Scale(bounds.max, transform.localScale) + transform.position;
         min = Vector3.Scale(bounds.min, transform.localScale) + transform.position;
     }
